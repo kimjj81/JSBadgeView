@@ -1,16 +1,16 @@
 /*
  Copyright (c) 2013 Javier Soto.
-
+ 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
  in the Software without restriction, including without limitation the rights
  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  copies of the Software, and to permit persons to whom the Software is
  furnished to do so, subject to the following conditions:
-
+ 
  The above copyright notice and this permission notice shall be included in
  all copies or substantial portions of the Software.
-
+ 
  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -33,12 +33,12 @@
 // Are only available on iOS7.
 // Soon JSBadgeView will require iOS 7 and we'll be able to use the new methods.
 #if  __IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_7_0
-    #define JSBadgeViewSilenceDeprecatedMethodStart()   _Pragma("clang diagnostic push") \
-                                                        _Pragma("clang diagnostic ignored \"-Wdeprecated-declarations\"")
-    #define JSBadgeViewSilenceDeprecatedMethodEnd()     _Pragma("clang diagnostic pop")
+#define JSBadgeViewSilenceDeprecatedMethodStart()   _Pragma("clang diagnostic push") \
+_Pragma("clang diagnostic ignored \"-Wdeprecated-declarations\"")
+#define JSBadgeViewSilenceDeprecatedMethodEnd()     _Pragma("clang diagnostic pop")
 #else
-    #define JSBadgeViewSilenceDeprecatedMethodStart()
-    #define JSBadgeViewSilenceDeprecatedMethodEnd()
+#define JSBadgeViewSilenceDeprecatedMethodStart()
+#define JSBadgeViewSilenceDeprecatedMethodEnd()
 #endif
 
 static const CGFloat JSBadgeViewShadowRadius = 1.0f;
@@ -63,7 +63,7 @@ static BOOL JSBadgeViewIsUIKitFlatMode(void)
             isUIKitFlatMode = (NSVersionOfLinkTimeLibrary("UIKit") >> 16) >= UIKitVersionNumber_iOS_7_0;
         }
     });
-
+    
     return isUIKitFlatMode;
 }
 
@@ -72,7 +72,7 @@ static BOOL JSBadgeViewIsUIKitFlatMode(void)
 + (void)applyCommonStyle
 {
     JSBadgeView *badgeViewAppearanceProxy = JSBadgeView.appearance;
-
+    
     badgeViewAppearanceProxy.backgroundColor = UIColor.clearColor;
     badgeViewAppearanceProxy.badgeAlignment = JSBadgeViewAlignmentTopRight;
     badgeViewAppearanceProxy.badgeBackgroundColor = UIColor.redColor;
@@ -83,7 +83,7 @@ static BOOL JSBadgeViewIsUIKitFlatMode(void)
 + (void)applyLegacyStyle
 {
     JSBadgeView *badgeViewAppearanceProxy = JSBadgeView.appearance;
-
+    
     badgeViewAppearanceProxy.badgeOverlayColor = [UIColor colorWithWhite:1.0f alpha:0.3];
     badgeViewAppearanceProxy.badgeTextShadowColor = UIColor.clearColor;
     badgeViewAppearanceProxy.badgeShadowColor = [UIColor colorWithWhite:0.0f alpha:0.4f];
@@ -95,7 +95,7 @@ static BOOL JSBadgeViewIsUIKitFlatMode(void)
 + (void)applyIOS7Style
 {
     JSBadgeView *badgeViewAppearanceProxy = JSBadgeView.appearance;
-
+    
     badgeViewAppearanceProxy.badgeOverlayColor = UIColor.clearColor;
     badgeViewAppearanceProxy.badgeTextShadowColor = UIColor.clearColor;
     badgeViewAppearanceProxy.badgeShadowColor = UIColor.clearColor;
@@ -108,7 +108,7 @@ static BOOL JSBadgeViewIsUIKitFlatMode(void)
     if (self == JSBadgeView.class)
     {
         [self applyCommonStyle];
-
+        
         if (JSBadgeViewIsUIKitFlatMode())
         {
             [self applyIOS7Style];
@@ -130,15 +130,6 @@ static BOOL JSBadgeViewIsUIKitFlatMode(void)
     
     return self;
 }
-
-- (void)setBadgeMinimunLetterLength:(NSUInteger)value
-{
-    if(_badgeMinimunLetterLength == value)
-    {
-        return;
-    }
-    _badgeMinimunLetterLength = value;
-}
 #pragma mark - Layout
 
 - (CGFloat)marginToDrawInside
@@ -149,15 +140,15 @@ static BOOL JSBadgeViewIsUIKitFlatMode(void)
 - (void)layoutSubviews
 {
     [super layoutSubviews];
-
+    
     CGRect newFrame = self.frame;
     const CGRect superviewBounds = CGRectIsEmpty(_frameToPositionInRelationWith) ? self.superview.bounds : _frameToPositionInRelationWith;
     
     const CGFloat textWidth = [self sizeOfTextForCurrentSettings].width;
-
+    
     const CGFloat marginToDrawInside = [self marginToDrawInside];
     const CGFloat viewWidth = textWidth + JSBadgeViewTextSideMargin + (marginToDrawInside * 2);
-    const CGFloat viewHeight = self.preferSameWidthHeight == YES && self.badgeText.length < 3? viewWidth : JSBadgeViewHeight + (marginToDrawInside * 2);
+    const CGFloat viewHeight = self.badgeMaxCircleTextLength != 0 && self.badgeMaxCircleTextLength >= self.badgeText.length ? viewWidth : JSBadgeViewHeight + (marginToDrawInside * 2);
     
     const CGFloat superviewWidth = superviewBounds.size.width;
     const CGFloat superviewHeight = superviewBounds.size.height;
@@ -230,7 +221,7 @@ static BOOL JSBadgeViewIsUIKitFlatMode(void)
             [string appendString:@"0"];
         }
         CGSize minimumSize = [string sizeWithFont:self.badgeTextFont];
-
+        
         if(minimumSize.height > value.height)
         {
             value.height = minimumSize.height;
@@ -240,7 +231,7 @@ static BOOL JSBadgeViewIsUIKitFlatMode(void)
             value.width = minimumSize.width;
         }
     }
-
+    
     JSBadgeViewSilenceDeprecatedMethodEnd();
     return value;
 }
@@ -252,7 +243,7 @@ static BOOL JSBadgeViewIsUIKitFlatMode(void)
     if (badgeAlignment != _badgeAlignment)
     {
         _badgeAlignment = badgeAlignment;
-
+        
         [self setNeedsLayout];
     }
 }
@@ -326,7 +317,7 @@ static BOOL JSBadgeViewIsUIKitFlatMode(void)
     if (badgeStrokeWidth != _badgeStrokeWidth)
     {
         _badgeStrokeWidth = badgeStrokeWidth;
-
+        
         [self setNeedsLayout];
         [self setNeedsDisplay];
     }
@@ -357,7 +348,7 @@ static BOOL JSBadgeViewIsUIKitFlatMode(void)
     if (!CGSizeEqualToSize(badgeShadowSize, _badgeShadowSize))
     {
         _badgeShadowSize = badgeShadowSize;
-
+        
         [self setNeedsDisplay];
     }
 }
@@ -371,7 +362,7 @@ static BOOL JSBadgeViewIsUIKitFlatMode(void)
     if (anyTextToDraw)
     {
         CGContextRef ctx = UIGraphicsGetCurrentContext();
-
+        
         const CGFloat marginToDrawInside = [self marginToDrawInside];
         const CGRect rectToDraw = CGRectInset(rect, marginToDrawInside, marginToDrawInside);
         
@@ -406,10 +397,10 @@ static BOOL JSBadgeViewIsUIKitFlatMode(void)
                                                                rectToDraw.origin.y - ceilf(height * 0.5),
                                                                width,
                                                                height);
-
+                
                 CGContextAddEllipseInRect(ctx, rectForOverlayCircle);
                 CGContextSetFillColorWithColor(ctx, self.badgeOverlayColor.CGColor);
-
+                
                 CGContextDrawPath(ctx, kCGPathFill);
             }
             CGContextRestoreGState(ctx);
@@ -428,7 +419,7 @@ static BOOL JSBadgeViewIsUIKitFlatMode(void)
         CGContextRestoreGState(ctx);
         
         /* Text */
-
+        
         CGContextSaveGState(ctx);
         {
             CGContextSetFillColorWithColor(ctx, self.badgeTextColor.CGColor);
@@ -439,7 +430,7 @@ static BOOL JSBadgeViewIsUIKitFlatMode(void)
             
             textFrame.size.height = textSize.height;
             textFrame.origin.y = rectToDraw.origin.y + ceilf((rectToDraw.size.height - textFrame.size.height) / 2.0f);
-
+            
             JSBadgeViewSilenceDeprecatedMethodStart();
             [self.badgeText drawInRect:textFrame
                               withFont:self.badgeTextFont
