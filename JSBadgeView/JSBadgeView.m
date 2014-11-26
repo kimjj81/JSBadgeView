@@ -131,6 +131,14 @@ static BOOL JSBadgeViewIsUIKitFlatMode(void)
     return self;
 }
 
+- (void)setBadgeMinimunLetterLength:(NSUInteger)value
+{
+    if(_badgeMinimunLetterLength == value)
+    {
+        return;
+    }
+    _badgeMinimunLetterLength = value;
+}
 #pragma mark - Layout
 
 - (CGFloat)marginToDrawInside
@@ -149,7 +157,7 @@ static BOOL JSBadgeViewIsUIKitFlatMode(void)
 
     const CGFloat marginToDrawInside = [self marginToDrawInside];
     const CGFloat viewWidth = textWidth + JSBadgeViewTextSideMargin + (marginToDrawInside * 2);
-    const CGFloat viewHeight = JSBadgeViewHeight + (marginToDrawInside * 2);
+    const CGFloat viewHeight = self.preferSameWidthHeight == YES ? viewWidth : JSBadgeViewHeight + (marginToDrawInside * 2);
     
     const CGFloat superviewWidth = superviewBounds.size.width;
     const CGFloat superviewHeight = superviewBounds.size.height;
@@ -213,8 +221,28 @@ static BOOL JSBadgeViewIsUIKitFlatMode(void)
 - (CGSize)sizeOfTextForCurrentSettings
 {
     JSBadgeViewSilenceDeprecatedMethodStart();
-    return [self.badgeText sizeWithFont:self.badgeTextFont];
+    CGSize value = [self.badgeText sizeWithFont:self.badgeTextFont];
+    if(self.badgeMinimunLetterLength != 0)
+    {
+        NSMutableString* string = [NSMutableString string];
+        for(int i=0;i<self.badgeMinimunLetterLength;i++)
+        {
+            [string appendString:@"0"];
+        }
+        CGSize minimumSize = [string sizeWithFont:self.badgeTextFont];
+
+        if(minimumSize.height > value.height)
+        {
+            value.height = minimumSize.height;
+        }
+        if(minimumSize.width > value.width)
+        {
+            value.width = minimumSize.width;
+        }
+    }
+
     JSBadgeViewSilenceDeprecatedMethodEnd();
+    return value;
 }
 
 #pragma mark - Setters

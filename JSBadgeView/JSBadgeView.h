@@ -88,6 +88,16 @@ typedef NS_ENUM(NSUInteger, JSBadgeViewAlignment)
 @property (nonatomic, assign) CGRect frameToPositionInRelationWith UI_APPEARANCE_SELECTOR;
 
 /**
+ * The size of badge is up to badgeTextLength. However I need to the least size of the badgeView.
+ * If badgeMinimumLetterCount is 0, nothing happen.
+ */
+@property (nonatomic) NSUInteger badgeMinimunLetterLength;
+
+/**
+ * if it is YES, Width = Height; But it will be not work as respected.
+ */
+@property (nonatomic) BOOL preferSameWidthHeight;
+/**
  * Optionally init using this method to have the badge automatically added to another view.
  */
 - (id)initWithParentView:(UIView *)parentView alignment:(JSBadgeViewAlignment)alignment;
