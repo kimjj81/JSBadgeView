@@ -65,10 +65,14 @@
         rectangle.layer.shadowOpacity = 0.4;
         rectangle.layer.shadowRadius = 1.0;
         rectangle.layer.shadowPath = rectangleShadowPath;        
-        
         JSBadgeView *badgeView = [[JSBadgeView alloc] initWithParentView:rectangle alignment:JSBadgeViewAlignmentTopRight];
-        badgeView.badgeText = [NSString stringWithFormat:@"%d", i];
 
+            
+        badgeView.badgeText = [NSString stringWithFormat:@"%d", i];
+        if(i%2==0)
+        {
+            badgeView.badgeText= nil;
+        }
         badgeView.preferSameWidthHeight = YES;
         badgeView.badgeMinimunLetterLength = 2;
         
